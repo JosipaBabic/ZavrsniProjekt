@@ -6,15 +6,11 @@
 #include "Header.h"
 
 
-
 int main() {
 
     FILE* datoteka;
     char imeDatoteke[10] = "vrtic.txt";
    
-
-    otvoriDatoteku(&datoteka, imeDatoteke, "a+");
-
     while (1){
 
         izbornik(imeDatoteke);

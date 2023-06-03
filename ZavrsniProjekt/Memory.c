@@ -6,20 +6,22 @@
 #include "Header.h"
 
 
-DIJETE* zauzimanjeMemPodataka(const int brojDjece) {
+DIJETE* zauzmiMemoriju(const int brojDjece) {
 
     DIJETE* tempZauzimanje = NULL;
     tempZauzimanje = (DIJETE*)calloc(brojDjece, sizeof(DIJETE));
 
     if (tempZauzimanje == NULL) {
-        return NULL;
+        perror("Zauzimanje memorije za djecu");
+        exit(EXIT_FAILURE);
     }
     return tempZauzimanje;
 
 }
 
-DIJETE* oslobodiMemo(DIJETE* podatciDjeteta) {
-    free(podatciDjeteta);
-
-    return NULL;
+void oslobodiMemoriju(DIJETE* svaDjeca) {
+    if (svaDjeca != NULL) {
+        free(svaDjeca);
+        svaDjeca = NULL;
+    }
 }

@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Memory.c">
+    <ClCompile Include="memory.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="functions.c">

@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="functions.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="Memory.c" />
+    <ClCompile Include="memory.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />

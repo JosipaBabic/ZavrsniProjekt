@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\functions.c" />
-    <ClCompile Include="..\src\main.c" />
-    <ClCompile Include="..\src\Memory.c" />
+    <ClCompile Include="functions.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="Memory.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Header.h" />
+    <ClInclude Include="Header.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\src\vrtic.txt" />
+    <Text Include="vrtic.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

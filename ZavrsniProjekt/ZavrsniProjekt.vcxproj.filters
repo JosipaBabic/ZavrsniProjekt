@@ -15,23 +15,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\main.c">
+    <ClCompile Include="Memory.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Memory.c">
+    <ClCompile Include="functions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\functions.c">
+    <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Header.h">
+    <ClInclude Include="Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\src\vrtic.txt">
+    <Text Include="vrtic.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

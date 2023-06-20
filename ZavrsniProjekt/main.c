@@ -11,11 +11,7 @@ int main() {
     FILE* datoteka;
     char imeDatoteke[10] = "vrtic.txt";
    
-    while (1){
-
-        izbornik(imeDatoteke);
-
-   }
+    izbornik(imeDatoteke);
 
     return 0;
 }

@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+ï»¿#define _CRT_SECURE_NO_WARNINGS
 #define _CRT_NONSTDC_NO_DEPRECATE
 
 #include <stdio.h>
@@ -22,19 +22,30 @@ void otvoriDatoteku(FILE** datoteka, const char* imeDatoteke, const char* nacin)
 void unesiDijete(const char* const imeDatoteke, DIJETE* svaDjeca) {
     
     DIJETE podatciDjeteta = { 0 };
-    int i;
-	int unosOk = 0, sveSuZnamenke = 1, oibUnesen = 0;
 
     podatciDjeteta.id = time(NULL);
 
+    unosPodatakaODjetetu(&podatciDjeteta, svaDjeca);
+
+    dodajDijeteUDatoteku(imeDatoteke, &podatciDjeteta);
+
+    printf("\nDodani su podatci za dijete:\n");
+    ispisDjeteta(&podatciDjeteta);
+}
+
+void unosPodatakaODjetetu(DIJETE* podatciDjeteta, DIJETE* svaDjeca) {
+    
+    int i;
+    int unosOk = 0, sveSuZnamenke = 1, oibUnesen = 0;
+   
     do {
         getchar();
         printf("Unesite OIB djeteta (11 znamenki): ");
-        scanf("%s", podatciDjeteta.oib);
-        
+        scanf("%s", podatciDjeteta->oib);
+
         sveSuZnamenke = 1;
-        for (i = 0; i < strlen(podatciDjeteta.oib); i++) {
-            if (podatciDjeteta.oib[i] < '0' || podatciDjeteta.oib[i] > '9') {
+        for (i = 0; i < strlen(podatciDjeteta->oib); i++) {
+            if (podatciDjeteta->oib[i] < '0' || podatciDjeteta->oib[i] > '9') {
                 sveSuZnamenke = 0;
                 break;
             }
@@ -42,15 +53,16 @@ void unesiDijete(const char* const imeDatoteke, DIJETE* svaDjeca) {
 
         oibUnesen = 0;
         for (i = 0; i < brojDjece; i++) {
-            if (strcmp(svaDjeca[i].oib, podatciDjeteta.oib) == 0) {
+            if ((svaDjeca + i)->id != podatciDjeteta->id && strcmp((svaDjeca + i)->oib, podatciDjeteta->oib) == 0) {
                 oibUnesen = 1;
                 break;
             }
         }
 
-        if (strlen(podatciDjeteta.oib) == 11 && sveSuZnamenke == 1 && oibUnesen == 0) {
+        if (strlen(podatciDjeteta->oib) == 11 && sveSuZnamenke == 1 && oibUnesen == 0) {
             unosOk = 1;
-        } else {
+        }
+        else {
             unosOk = 0;
             if (oibUnesen == 1) {
                 printf("Dijete s tim OIB-om je vec uneseno! ");
@@ -63,83 +75,78 @@ void unesiDijete(const char* const imeDatoteke, DIJETE* svaDjeca) {
 
     getchar();
     printf("Unesite ime djeteta: ");
-    scanf("%19[^\n]", podatciDjeteta.ime);
+    scanf("%19[^\n]", podatciDjeteta->ime);
 
-	getchar();
-	printf("Unesite prezime djeteta: ");
-	scanf("%29[^\n]", podatciDjeteta.prezime);
-	
+    getchar();
+    printf("Unesite prezime djeteta: ");
+    scanf("%29[^\n]", podatciDjeteta->prezime);
+
     unosOk = 0;
     do {
-	    printf("Unesite broj zivih roditelja djeteta (0, 1 ili 2):");
-	    scanf("%d", &podatciDjeteta.brojRoditelja);
+        printf("Unesite broj zivih roditelja djeteta (0, 1 ili 2):");
+        scanf("%d", &podatciDjeteta->brojRoditelja);
 
-	    if (podatciDjeteta.brojRoditelja >=0 && podatciDjeteta.brojRoditelja <=2) {
-	        unosOk = 1;
-	    }
-	    else {
-	        printf("Krivi unos! ");
-	        unosOk = 0;
-	    }
-	} while (unosOk == 0);
-    
+        if (podatciDjeteta->brojRoditelja >= 0 && podatciDjeteta->brojRoditelja <= 2) {
+            unosOk = 1;
+        }
+        else {
+            printf("Krivi unos! ");
+            unosOk = 0;
+        }
+    } while (unosOk == 0);
 
-	unosOk = 0; 
-	do {
-		printf("Unesite broj zaposlenih roditelja djeteta (0 - %d): ", podatciDjeteta.brojRoditelja);
-		scanf("%d", &podatciDjeteta.brojZaposlenihRoditelja);
 
-		if (podatciDjeteta.brojZaposlenihRoditelja >= 0 && podatciDjeteta.brojZaposlenihRoditelja <= podatciDjeteta.brojRoditelja) {
-			unosOk = 1;
-		}
-		else {
-			printf("Krivi unos! ");
-			unosOk = 0;
-		}
-	} while (unosOk == 0);
+    unosOk = 0;
+    do {
+        printf("Unesite broj zaposlenih roditelja djeteta (0 - %d): ", podatciDjeteta->brojRoditelja);
+        scanf("%d", &podatciDjeteta->brojZaposlenihRoditelja);
+
+        if (podatciDjeteta->brojZaposlenihRoditelja >= 0 && podatciDjeteta->brojZaposlenihRoditelja <= podatciDjeteta->brojRoditelja) {
+            unosOk = 1;
+        }
+        else {
+            printf("Krivi unos! ");
+            unosOk = 0;
+        }
+    } while (unosOk == 0);
 
     printf("Unesite broj brace i sestara: ");
-    scanf("%d", &podatciDjeteta.brojBraceSestara);
+    scanf("%d", &podatciDjeteta->brojBraceSestara);
 
-	unosOk = 0;
-	do {
-		printf("Ima li dijete posebne potrebe? (0-ne, 1-da): ");
-		scanf("%d", &podatciDjeteta.dijeteSPosebnimPotrebama);
+    unosOk = 0;
+    do {
+        printf("Ima li dijete posebne potrebe? (0-ne, 1-da): ");
+        scanf("%d", &podatciDjeteta->dijeteSPosebnimPotrebama);
 
-		if (podatciDjeteta.dijeteSPosebnimPotrebama == 0 || podatciDjeteta.dijeteSPosebnimPotrebama == 1) {
-			unosOk = 1;
-		}
-		else {
-			printf("Krivi unos! ");
-			unosOk = 0;
-		}
-	} while (unosOk == 0);
-    
-	unosOk = 0;
-	do {
-		printf("Unesite broj godina djeteta (1-6): ");
-		scanf("%d", &podatciDjeteta.brojGodina);
+        if (podatciDjeteta->dijeteSPosebnimPotrebama == 0 || podatciDjeteta->dijeteSPosebnimPotrebama == 1) {
+            unosOk = 1;
+        }
+        else {
+            printf("Krivi unos! ");
+            unosOk = 0;
+        }
+    } while (unosOk == 0);
 
-		if (podatciDjeteta.brojGodina >= 1 && podatciDjeteta.brojGodina <= 6) {
-			unosOk = 1;
-		}
-		else {
-			printf("Krivi unos! ");
-			unosOk = 0;
-		}
-	} while (unosOk == 0);
-  
-    podatciDjeteta.zbrojBodova = 0;
-    podatciDjeteta.zbrojBodova += (2 - podatciDjeteta.brojRoditelja);
-    podatciDjeteta.zbrojBodova += podatciDjeteta.brojZaposlenihRoditelja;
-    podatciDjeteta.zbrojBodova += podatciDjeteta.brojBraceSestara;
-    podatciDjeteta.zbrojBodova += podatciDjeteta.dijeteSPosebnimPotrebama;
-    podatciDjeteta.zbrojBodova += podatciDjeteta.brojGodina;
+    unosOk = 0;
+    do {
+        printf("Unesite broj godina djeteta (1-6): ");
+        scanf("%d", &podatciDjeteta->brojGodina);
 
-    dodajDijeteUDatoteku(imeDatoteke, &podatciDjeteta);
+        if (podatciDjeteta->brojGodina >= 1 && podatciDjeteta->brojGodina <= 6) {
+            unosOk = 1;
+        }
+        else {
+            printf("Krivi unos! ");
+            unosOk = 0;
+        }
+    } while (unosOk == 0);
 
-    printf("\nDodani su podatci za dijete:\n");
-    ispisDjeteta(&podatciDjeteta);
+    podatciDjeteta->zbrojBodova = 0;
+    podatciDjeteta->zbrojBodova += (2 - podatciDjeteta->brojRoditelja);
+    podatciDjeteta->zbrojBodova += podatciDjeteta->brojZaposlenihRoditelja;
+    podatciDjeteta->zbrojBodova += podatciDjeteta->brojBraceSestara;
+    podatciDjeteta->zbrojBodova += podatciDjeteta->dijeteSPosebnimPotrebama;
+    podatciDjeteta->zbrojBodova += podatciDjeteta->brojGodina;
 }
 
 void ispisSveDjece(DIJETE* svaDjeca) {
@@ -208,14 +215,14 @@ DIJETE konvertirajLinijuUStrukturu(char* linija) {
         exit(EXIT_FAILURE);
     }
     sscanf(dijeloviLinije[0], "%ld", &podatciDjeteta->id);
-    sscanf(strdup(dijeloviLinije[1]), "%s", podatciDjeteta->oib);
-    sscanf(strdup(dijeloviLinije[2]), "%s", podatciDjeteta->ime);
-    sscanf(strdup(dijeloviLinije[3]), "%s", podatciDjeteta->prezime);
+    sscanf(dijeloviLinije[1], "%s", podatciDjeteta->oib);
+    sscanf(dijeloviLinije[2], "%[^\n]", podatciDjeteta->ime);
+    sscanf(dijeloviLinije[3], "%[^\n]", podatciDjeteta->prezime);
     sscanf(dijeloviLinije[4], "%d", &podatciDjeteta->brojRoditelja);
     sscanf(dijeloviLinije[5], "%d", &podatciDjeteta->brojZaposlenihRoditelja);
     sscanf(dijeloviLinije[6], "%d", &podatciDjeteta->brojBraceSestara);
-    sscanf(dijeloviLinije[7], "%d", &podatciDjeteta->brojGodina);
-    sscanf(dijeloviLinije[8], "%d", &podatciDjeteta->dijeteSPosebnimPotrebama);
+    sscanf(dijeloviLinije[7], "%d", &podatciDjeteta->dijeteSPosebnimPotrebama);
+    sscanf(dijeloviLinije[8], "%d", &podatciDjeteta->brojGodina);
     sscanf(dijeloviLinije[9], "%d", &podatciDjeteta->zbrojBodova);
 
     return *podatciDjeteta;
@@ -304,10 +311,10 @@ void pretraziPoOibu(DIJETE* svaDjeca, char* oib) {
 void rangLista(DIJETE* svaDjeca, int brojDjece) {
     int i, j;
     DIJETE tempPodatci;
-
+ 
     for (i = 0; i < brojDjece - 1; i++) {
         for (j = i + 1; j < brojDjece; j++) {
-            if (svaDjeca[i].zbrojBodova < svaDjeca[j].zbrojBodova) {
+            if (svaDjeca[i].zbrojBodova < svaDjeca[j].zbrojBodova || (svaDjeca[i].zbrojBodova == svaDjeca[j].zbrojBodova && svaDjeca[i].id > svaDjeca[j].id)) {
                 tempPodatci = svaDjeca[i];
                 svaDjeca[i] = svaDjeca[j];
                 svaDjeca[j] = tempPodatci;
@@ -324,53 +331,37 @@ void rangLista(DIJETE* svaDjeca, int brojDjece) {
     printf("\n");
 }
 
-void ispravakPogresnihPodataka(DIJETE* podatciDjeteta, int brojDjece) {
+void ispravakPogresnihPodataka(const char* imeDatoteke, DIJETE* svaDjeca) {
+    
     char oib[13];
     int pronadeno = 0;
+    FILE* datoteka;
+    int i;
 
-    printf("Unesite oib djeteta cije podatke želite ispraviti: ");
+    printf("Unesite oib djeteta cije podatke zelite ispraviti: ");
     scanf("%s", oib);
 
-    for (int i = 0; i < brojDjece; i++) {
-        if (strcmp(podatciDjeteta[i].oib, oib) == 0) {
-            printf("Podaci za dijete s oib-om %s:\n", oib);
-            printf("Ime: %s\n", podatciDjeteta[i].ime);
-            printf("Prezime: %s\n", podatciDjeteta[i].prezime);
-            printf("oib: %s\n", podatciDjeteta[i].oib);
-            printf("Broj roditelja: %d\n", podatciDjeteta[i].brojRoditelja);
-            printf("Broj zaposlenih roditelja: %d\n", podatciDjeteta[i].brojZaposlenihRoditelja);
-            printf("Broj braæe i sestara: %d\n", podatciDjeteta[i].brojBraceSestara);
-            printf("Dijete s posebnim potrebama: %d\n", podatciDjeteta[i].dijeteSPosebnimPotrebama);
-            printf("Broj godina: %d\n", podatciDjeteta[i].brojGodina);
-            printf("Zbroj bodova: %d\n", podatciDjeteta[i].zbrojBodova);
-            printf("\n");
+    for (i = 0; i < brojDjece; i++) {
+        if (strcmp(svaDjeca[i].oib, oib) == 0) {
 
-           /* printf("Unesite novi broj roditelja (0, 1 ili 2): ");
-            scanf("%d", &podatciDjeteta[i].brojRoditelja);
-            printf("Unesite novi broj zaposlenih roditelja (0, 1 ili 2): ");
-            scanf("%d", &podatciDjeteta[i].brojZaposlenihRoditelja);
-            printf("Unesite novi broj brace i sestara: ");
-            scanf("%d", &podatciDjeteta[i].brojBraceSestara);
-            printf("Unesite dijete s posebnim potrebama (1 - da, 0 - ne): ");
-            scanf("%d", &podatciDjeteta[i].dijeteSPosebnimPotrebama);
-            printf("Unesite novi broj godina djeteta (1-6): ");
-            scanf("%d", &podatciDjeteta[i].brojGodina);*/
-
-            // Ažuriraj zbroj bodova
-            podatciDjeteta[i].zbrojBodova = 0;
-            podatciDjeteta[i].zbrojBodova += (2 - podatciDjeteta[i].brojRoditelja);
-            podatciDjeteta[i].zbrojBodova += podatciDjeteta[i].brojZaposlenihRoditelja;
-            podatciDjeteta[i].zbrojBodova += podatciDjeteta[i].brojBraceSestara;
-            podatciDjeteta[i].zbrojBodova += podatciDjeteta[i].dijeteSPosebnimPotrebama;
-            podatciDjeteta[i].zbrojBodova += podatciDjeteta[i].brojGodina;
+            unosPodatakaODjetetu(svaDjeca + i, svaDjeca);
 
             printf("Podaci su uspjesno ispravljeni.\n");
 
             pronadeno = 1;
+
+            break;
         }
     }
+    if (pronadeno) {
+        otvoriDatoteku(&datoteka, imeDatoteke, "w");
 
-    if (!pronadeno) {
+        for (i = 0; i < brojDjece; i++) {
+            upisiDijeteUDatoteku(datoteka, svaDjeca + i);
+        }
+        fclose(datoteka);
+    } 
+    else {
         printf("Nema podataka za dijete s oib-om %s.\n", oib);
     }
 }
@@ -402,7 +393,7 @@ void izbornik(const char* const imeDatoteke) {
             svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
             break;
         case 2: 
-            ispravakPogresnihPodataka(svaDjeca, brojDjece);
+            ispravakPogresnihPodataka(imeDatoteke, svaDjeca);
             break;
         case 3:
             printf("Unesite OIB za brisanje: ");

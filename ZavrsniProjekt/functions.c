@@ -11,10 +11,82 @@
 
 static int brojDjece = 0;
 
-void otvoriDatoteku(FILE** datoteka, const char* imeDatoteke, const char* nacin) {
-    *datoteka = fopen(imeDatoteke, nacin);
+void izbornik(const char* const imeDatoteke) {
+
+    static DIJETE* svaDjeca = NULL;
+    int unosOk;
+    char oib[12], prezime[30], odabir, odabirUnos[100];
+
+    svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
+
+    while (1) {
+        printf("\n-------------------\n");
+        printf("Izbornik:\n");
+        printf("1. Unos podataka djeteta\n");
+        printf("2. Izmjena podataka djeteta\n");
+        printf("3. Brisanje podataka djeteta\n");
+        printf("4. Rang lista\n");
+        printf("5. Pretrazivanje po prezimenu\n");
+        printf("6. Pretrazivanje po OIB-u\n");
+        printf("7. Ispis sve djece\n");
+        printf("8. Oslobadanje memorije i izlaz iz programa\n");
+        printf("Odaberite opciju: ");
+        scanf("%s", &odabirUnos);
+
+        if (strlen(odabirUnos) == 1) {
+            odabir = odabirUnos[0];
+        }
+        else {
+            odabir = 0;
+        }
+
+        switch (odabir) {
+        case '1':
+            unesiDijete(imeDatoteke, svaDjeca);
+            svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
+            break;
+        case '2':
+            izmjenaPodatakaDjeteta(imeDatoteke, svaDjeca);
+            svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
+            break;
+        case '3':
+            printf("Unesite OIB za brisanje: ");
+            scanf("%s", oib);
+            if (izbrisiDijete(imeDatoteke, svaDjeca, oib)) {
+                svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
+            }
+            break;
+        case '4':
+            rangLista(svaDjeca, brojDjece);
+            break;
+        case '5':
+            printf("Unesite prezime za pretrazivanje: ");
+            scanf("%s", prezime);
+            pretraziPoPrezimenu(svaDjeca, prezime);
+            break;
+        case '6':
+            printf("Unesite OIB za pretrazivanje: ");
+            scanf("%s", oib);
+            pretraziPoOibu(svaDjeca, oib);
+            break;
+        case '7':
+            ispisSveDjece(svaDjeca);
+            break;
+        case '8':
+            oslobodiMemoriju(svaDjeca);
+            printf("Memorija je oslobodena.\n");
+            return;
+        default:
+            printf("Pogresan odabir. Molimo odaberite ponovno.\n");
+        }
+        printf("\n");
+    }
+}
+
+void otvoriDatoteku(FILE** datoteka, const char* imeDatoteke, const char* nacinRada) {
+    *datoteka = fopen(imeDatoteke, nacinRada);
     if (*datoteka == NULL) {
-        printf("Pogreska pri otvaranju datoteke.\n");
+       perror("Pogreska pri otvaranju datoteke.\n");
         exit(EXIT_FAILURE);
     }
 }
@@ -27,7 +99,10 @@ void unesiDijete(const char* const imeDatoteke, DIJETE* svaDjeca) {
 
     unosPodatakaODjetetu(&podatciDjeteta, svaDjeca);
 
-    dodajDijeteUDatoteku(imeDatoteke, &podatciDjeteta);
+    FILE* datoteka;
+    otvoriDatoteku(&datoteka, imeDatoteke, "a+");
+    upisiDijeteUDatoteku(datoteka, &podatciDjeteta);
+    fclose(datoteka);
 
     printf("\nDodani su podatci za dijete:\n");
     ispisDjeteta(&podatciDjeteta);
@@ -159,7 +234,7 @@ void ispisSveDjece(DIJETE* svaDjeca) {
 }
 
 void ispisDjeteta(DIJETE* podatciDjeteta) {
-    printf("\nPodatci djeteta:\nId: %ld, OIB: %s, Ime: %s, Prezime: %s, BrojRoditelja: %d, BrojZaposlenihRoditelja: %d, BrojBraceSestara: %d, DijeteSPosebnimPotrebama: %d, BrojGodina: %d, ZbrojBodova: %d\n",
+    printf("\nId: %ld, OIB: %s, Ime: %s, Prezime: %s, BrojRoditelja: %d, BrojZaposlenihRoditelja: %d, BrojBraceSestara: %d, DijeteSPosebnimPotrebama: %d, BrojGodina: %d, ZbrojBodova: %d\n",
         podatciDjeteta->id, podatciDjeteta->oib, podatciDjeteta->ime, podatciDjeteta->prezime, podatciDjeteta->brojRoditelja, podatciDjeteta->brojZaposlenihRoditelja,
         podatciDjeteta->brojBraceSestara, podatciDjeteta->dijeteSPosebnimPotrebama, podatciDjeteta->brojGodina, podatciDjeteta->zbrojBodova);
 }
@@ -176,7 +251,7 @@ DIJETE* ucitavanjeDjeceIzDatoteke(const char* const imeDatoteke, DIJETE* svaDjec
 
     brojDjece = 0;
     for (znak = getc(datoteka); znak != EOF; znak = getc(datoteka))
-        if (znak == '\n') // Increment count if this character is newline
+        if (znak == '\n') 
             brojDjece = brojDjece + 1;
     printf("\nBroj djece u datoteci: %d\n", brojDjece);
 
@@ -253,13 +328,6 @@ int izbrisiDijete(const char* const imeDatoteke, DIJETE* svaDjeca, char* oib) {
     return obrisano;
 }
 
-void dodajDijeteUDatoteku(const char* const imeDatoteke, DIJETE* podatciDjeteta) {
-    FILE* datoteka;
-    otvoriDatoteku(&datoteka, imeDatoteke, "a+");
-    upisiDijeteUDatoteku(datoteka, podatciDjeteta);
-    fclose(datoteka);
-}
-
 void upisiDijeteUDatoteku(FILE* datoteka, DIJETE* podatciDjeteta) {
     fprintf(datoteka, "%ld,%s,%s,%s,%d,%d,%d,%d,%d,%d\n",
         podatciDjeteta->id,
@@ -323,22 +391,22 @@ void rangLista(DIJETE* svaDjeca, int brojDjece) {
     }
 
     printf("Rang lista:\n");
-
+    
     for (i = 0; i < brojDjece; i++) {
-        printf("%d. mjesto: %s %s (%d bodova)\n", i + 1, svaDjeca[i].ime, svaDjeca[i].prezime, svaDjeca[i].zbrojBodova);
+        printf("%d. mjesto: %s %s %s (%d bodova)\n", i + 1, svaDjeca[i].ime, svaDjeca[i].prezime, svaDjeca[i].oib, svaDjeca[i].zbrojBodova);
     }
 
     printf("\n");
 }
 
-void ispravakPogresnihPodataka(const char* imeDatoteke, DIJETE* svaDjeca) {
+void izmjenaPodatakaDjeteta(const char* imeDatoteke, DIJETE* svaDjeca) {
     
     char oib[13];
     int pronadeno = 0;
     FILE* datoteka;
     int i;
 
-    printf("Unesite oib djeteta cije podatke zelite ispraviti: ");
+    printf("Unesite OIB djeteta cije podatke zelite izmijeniti: ");
     scanf("%s", oib);
 
     for (i = 0; i < brojDjece; i++) {
@@ -346,7 +414,7 @@ void ispravakPogresnihPodataka(const char* imeDatoteke, DIJETE* svaDjeca) {
 
             unosPodatakaODjetetu(svaDjeca + i, svaDjeca);
 
-            printf("Podaci su uspjesno ispravljeni.\n");
+            printf("Podaci su uspjesno izmjenjeni.\n");
 
             pronadeno = 1;
 
@@ -362,69 +430,10 @@ void ispravakPogresnihPodataka(const char* imeDatoteke, DIJETE* svaDjeca) {
         fclose(datoteka);
     } 
     else {
-        printf("Nema podataka za dijete s oib-om %s.\n", oib);
+        printf("Nema podataka za dijete s OIB-om %s.\n", oib);
     }
 }
 
-void izbornik(const char* const imeDatoteke) {
-    
-    static DIJETE* svaDjeca = NULL;
-    int odabir;
-    char oib[12], prezime[30];
 
-    svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
-
-    while (1) {
-        printf("\n-------------------\n");
-        printf("Izbornik:\n");
-        printf("1. Unos podataka djeteta\n");
-        printf("2. Izmjena podataka djeteta\n");
-        printf("3. Brisanje podataka djeteta\n");
-        printf("4. Rang lista\n");
-        printf("5. Pretrazivanje po prezimenu\n");
-        printf("6. Pretrazivanje po OIB-u\n");
-        printf("7. Oslobadanje memorije i izlaz iz programa\n");
-        printf("Odaberite opciju: ");
-        scanf("%d", &odabir);
-
-        switch (odabir) {
-        case 1:
-            unesiDijete(imeDatoteke, svaDjeca);
-            svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
-            break;
-        case 2: 
-            ispravakPogresnihPodataka(imeDatoteke, svaDjeca);
-            break;
-        case 3:
-            printf("Unesite OIB za brisanje: ");
-            scanf("%s", oib);
-            if (izbrisiDijete(imeDatoteke, svaDjeca, oib)) {
-                svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
-            }
-            break;
-        case 4: 
-            rangLista(svaDjeca, brojDjece);
-            break;
-        case 5:
-            printf("Unesite prezime za pretrazivanje: ");
-            scanf("%s", prezime);
-            pretraziPoPrezimenu(svaDjeca, prezime);
-            break;
-        case 6:
-            printf("Unesite OIB za pretrazivanje: ");
-            scanf("%s", oib);
-            pretraziPoOibu(svaDjeca, oib);
-            break;
-        case 7:
-            oslobodiMemoriju(svaDjeca);
-            printf("Memorija je oslobodena.\n");
-            return;
-        default:
-            printf("Pogresan odabir. Molimo odaberite ponovno.\n");
-        }
-
-        printf("\n");
-    }
-}
 
  

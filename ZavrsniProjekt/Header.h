@@ -22,19 +22,19 @@ typedef struct {
 
 DIJETE* zauzmiMemoriju(const int brojDjece);
 void oslobodiMemoriju(DIJETE* svaDjeca);
+void izbornik(const char* const imeDatoteke);
 void otvoriDatoteku(FILE** datoteka, const char* imeDatoteke, const char* nacin);
 void unesiDijete(const char* const imeDatoteke, DIJETE* svaDjeca);
 void unosPodatakaODjetetu(DIJETE* podatciDjeteta, DIJETE* svaDjeca);
+void ispisSveDjece(DIJETE* svaDjeca);
+void ispisDjeteta(DIJETE* podatciDjeteta);
+DIJETE* ucitavanjeDjeceIzDatoteke(const char* const imeDatoteke, DIJETE* svaDjeca);
+DIJETE konvertirajLinijuUStrukturu(char* line);
+int izbrisiDijete(const char* const imeDatoteke, DIJETE* svaDjeca, char* oib);
+void upisiDijeteUDatoteku(FILE* datoteka, DIJETE* podatciDjeteta);
 void pretraziPoPrezimenu(DIJETE* svaDjeca, char* prezime);
 void pretraziPoOibu(DIJETE* svaDjeca, char* oib);
 void rangLista(DIJETE* podatci, int brojDjece);
-void ispravakPogresnihPodataka(const char* imeDatoteke, DIJETE* svaDjeca);
-void izbornik(const char* const imeDatoteke);
-void ispisDjeteta(DIJETE* podatciDjeteta);
-DIJETE konvertirajLinijuUStrukturu(char* line);
-DIJETE* ucitavanjeDjeceIzDatoteke(const char* const imeDatoteke, DIJETE* svaDjeca);
-void dodajDijeteUDatoteku(const char* const imeDatoteke, DIJETE* podatciDjeteta);
-void upisiDijeteUDatoteku(FILE* datoteka, DIJETE* podatciDjeteta);
-int izbrisiDijete(const char* const imeDatoteke, DIJETE* svaDjeca, char* oib);
+void izmjenaPodatakaDjeteta(const char* imeDatoteke, DIJETE* svaDjeca);
 
 #endif

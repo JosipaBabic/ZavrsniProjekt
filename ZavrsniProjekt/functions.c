@@ -37,7 +37,7 @@ void izbornik(const char* const imeDatoteke) {
             odabir = odabirUnos[0];
         }
         else {
-            odabir = 0;
+            odabir = '0';
         }
 
         switch (odabir) {
@@ -46,15 +46,16 @@ void izbornik(const char* const imeDatoteke) {
             svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
             break;
         case '2':
-            izmjenaPodatakaDjeteta(imeDatoteke, svaDjeca);
+            printf("Unesite OIB za izmjenu: ");
+            scanf("%s", oib);
+            izmjenaPodatakaDjeteta(imeDatoteke, svaDjeca, oib);
             svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
             break;
         case '3':
             printf("Unesite OIB za brisanje: ");
             scanf("%s", oib);
-            if (izbrisiDijete(imeDatoteke, svaDjeca, oib)) {
-                svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
-            }
+            izbrisiDijete(imeDatoteke, svaDjeca, oib);
+            svaDjeca = ucitavanjeDjeceIzDatoteke(imeDatoteke, svaDjeca);
             break;
         case '4':
             rangLista(svaDjeca, brojDjece);
@@ -303,7 +304,7 @@ DIJETE konvertirajLinijuUStrukturu(char* linija) {
     return *podatciDjeteta;
 }
 
-int izbrisiDijete(const char* const imeDatoteke, DIJETE* svaDjeca, char* oib) {
+void izbrisiDijete(const char* const imeDatoteke, DIJETE* svaDjeca, char* oib) {
     int i, obrisano = 0;
     FILE* datoteka;
 
@@ -324,8 +325,6 @@ int izbrisiDijete(const char* const imeDatoteke, DIJETE* svaDjeca, char* oib) {
     else {
         printf("\nNema podataka za dijete s OIB-om %s.\n", oib);
     }
-
-    return obrisano;
 }
 
 void upisiDijeteUDatoteku(FILE* datoteka, DIJETE* podatciDjeteta) {
@@ -399,15 +398,11 @@ void rangLista(DIJETE* svaDjeca, int brojDjece) {
     printf("\n");
 }
 
-void izmjenaPodatakaDjeteta(const char* imeDatoteke, DIJETE* svaDjeca) {
+void izmjenaPodatakaDjeteta(const char* imeDatoteke, DIJETE* svaDjeca, char* oib) {
     
-    char oib[13];
     int pronadeno = 0;
     FILE* datoteka;
     int i;
-
-    printf("Unesite OIB djeteta cije podatke zelite izmijeniti: ");
-    scanf("%s", oib);
 
     for (i = 0; i < brojDjece; i++) {
         if (strcmp(svaDjeca[i].oib, oib) == 0) {

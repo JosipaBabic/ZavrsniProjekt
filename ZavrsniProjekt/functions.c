@@ -87,8 +87,12 @@ void izbornik(const char* const imeDatoteke) {
 void otvoriDatoteku(FILE** datoteka, const char* imeDatoteke, const char* nacinRada) {
     *datoteka = fopen(imeDatoteke, nacinRada);
     if (*datoteka == NULL) {
-       perror("Pogreska pri otvaranju datoteke.\n");
-        exit(EXIT_FAILURE);
+       
+       FILE* datoteka = fopen(imeDatoteke, "w");
+       if (datoteka == NULL) {
+           perror("greska u otvaranju!");
+           exit(EXIT_FAILURE);
+       }
     }
 }
 

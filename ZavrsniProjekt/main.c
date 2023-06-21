@@ -10,6 +10,8 @@ int main() {
 
     FILE* datoteka;
     char imeDatoteke[10] = "vrtic.txt";
+
+    otvoriDatoteku(&datoteka, imeDatoteke, "r");
    
     izbornik(imeDatoteke);
 
